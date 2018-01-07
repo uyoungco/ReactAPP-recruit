@@ -59,4 +59,13 @@ class Login extends React.Component{
   }
 }
 
+
+// const mapStateToProps = (state, ownProps) => {
+//   return {
+//     todos: state.user
+//   }
+// }
+// const actionCreators = { login }
+// Login = connect(mapStateToProps, actionCreators)(Login)
+
 export default Login

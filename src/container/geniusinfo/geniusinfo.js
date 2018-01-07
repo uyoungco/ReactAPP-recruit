@@ -1,34 +1,26 @@
-import React  from 'react'
+import React from 'react'
 import { NavBar, InputItem, TextareaItem, Button } from 'antd-mobile';
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom';
 import AvatarSelector from '../../component/avatar-selector/avatar-selector'
 import { update } from '../../redux/user.redux'
 
-// const mapStateProps = (state) => {
-//     return { state.user }
-// }
-// const actionCreators = { updata }
-// BossInfo = connect(mapStateProps, actionCreators)(BossInfo)
-
 @connect(
     state => state.user,
     { update }
 )
 
-class BossInfo extends React.Component {
+class GeniusInfo extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            title:'',
-            company:'',
-            money:'',
-            desc:''
+            title: '',
+            desc: ''
         }
     }
     onChange(key, val) {
         this.setState({
-            [key]:val
+            [key]: val
         })
     }
 
@@ -38,33 +30,27 @@ class BossInfo extends React.Component {
         return (
             <div>
                 {redirect && redirect !== path ? <Redirect to={this.props.redirectTo}></Redirect> : null}
-                <NavBar mode="dark">BOSS信息完善</NavBar>
-                <AvatarSelector selectAvatar={(imgname)=>{
+                <NavBar mode="dark">牛人信息完善</NavBar>
+                <AvatarSelector selectAvatar={(imgname) => {
                     this.setState({
                         avatar: imgname
                     })
                 }}></AvatarSelector>
-                <InputItem onChange={(v)=>this.onChange('title', v)}>
-                    招聘职位
-                </InputItem>
-                <InputItem onChange={(v)=>this.onChange('company', v)}>
-                    公司名称
-                </InputItem>
-                <InputItem onChange={(v)=>this.onChange('money', v)}>
-                    职位薪资
+                <InputItem onChange={(v) => this.onChange('title', v)}>
+                    求职岗位
                 </InputItem>
                 <TextareaItem
-                    title="职位要求"
+                    title="个人简介"
                     rows={3}
                     autoHeight
-                    onChange={(v)=>this.onChange('desc',v)}
+                    onChange={(v) => this.onChange('desc', v)}
                 >
                 </TextareaItem>
-                <Button type="primary" onClick={()=>this.props.update(this.state)}>保存</Button>
+                <Button type="primary" onClick={() => this.props.update(this.state)}>保存</Button>
             </div>
         )
     }
 }
 
 
-export default BossInfo
+export default GeniusInfo
