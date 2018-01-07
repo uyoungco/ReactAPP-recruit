@@ -12,6 +12,7 @@ import GeniusInfo from './container/geniusinfo/geniusinfo'
 import reducers from './reducer';
 import './config'
 import AuthRoute from './component/authroute/authroute'
+import Dashboard from './component/dashboard/dashboard'
 import './index.css'
 
 const store = createStore(reducers, compose(
@@ -19,13 +20,8 @@ const store = createStore(reducers, compose(
   window.devToolsExtension ? window.devToolsExtension() : f=>f
 ))
 
-function Boss() {
-  return <h2>Boss页面</h2>
-}
-function Genius() {
-	return <h2>genius页面</h2>
-}
 
+// boss genius me msg 四个页面
 ReactDom.render(
   <Provider store={store} >
 	<BrowserRouter>
@@ -33,11 +29,10 @@ ReactDom.render(
 			<AuthRoute></AuthRoute>
 			<Switch>
 					<Route path='/geniusinfo' component={GeniusInfo}></Route>
-					<Route path='/genius' component={Genius}></Route>
 					<Route path='/bossinfo' component={BossInfo}></Route>
-					<Route path='/boss' component={Boss}></Route>
 					<Route path='/login' component={Login}></Route>
 					<Route path='/register' component={Register}></Route>
+					<Route component={Dashboard}></Route>
 			</Switch>
 		</div>
 	</BrowserRouter>
