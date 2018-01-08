@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { NavBar } from 'antd-mobile'
 import { Switch, Route } from 'react-router-dom'
+
 import NavLinkBar from '../navlink/navlink'
+import Boss from '../boss/boss'
 
 
 function Msg() {
@@ -15,9 +17,7 @@ function User() {
 	return <h2>User</h2>
 }
 
-function Boss() {
-	return <h2>Boss首页</h2>
-}
+
 @connect(
 	state => state
 )
@@ -62,7 +62,7 @@ class Dashboard extends React.Component {
         return (
             <div>
 				<NavBar className="fixd-header" mode="dard">
-					{navList.find(v => v.path === pathname).title}
+					{navList.find(v => v.path === pathname).title}   {/* 此处有BUG */}
 				</NavBar>
 				<div style={{marginTop:45}}>
 					<Switch>

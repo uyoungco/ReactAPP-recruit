@@ -29,7 +29,7 @@ class AuthRoute extends React.Component {
             this.props.history.push('/login')
             //console.log(this.props.history)
           }
-          console.log(res.data)
+          // console.log(res.data)
         }
       })
       // 用户的type 身份是Boss还是牛人
