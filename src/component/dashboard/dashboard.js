@@ -5,13 +5,11 @@ import { Switch, Route } from 'react-router-dom'
 
 import NavLinkBar from '../navlink/navlink'
 import Boss from '../boss/boss'
+import Genius from '../genius/genius'
 
 
 function Msg() {
 	return <h2>Msg</h2>
-}
-function Genius() {
-	return <h2>Genius</h2>
 }
 function User() {
 	return <h2>User</h2>
@@ -33,48 +31,46 @@ class Dashboard extends React.Component {
 				text: '牛人',
 				icon: 'boss',
 				title: '牛人列表',
-				Component: Boss,
-				hide:user.type==='genius'
+				component: Boss,
+				hide: user.type === 'genius'
 			},
 			{
 				path: '/genius',
-				text: '牛人',
+				text: 'boss',
 				icon: 'job',
 				title: 'BOSS列表',
-				Component: Genius,
-				hide: user.type==='boss'
+				component: Genius,
+				hide: user.type === 'boss'
 			},
 			{
 				path: '/msg',
 				text: '消息',
 				icon: 'msg',
 				title: '消息列表',
-				Component: Msg,
+				component: Msg
 			},
 			{
 				path: '/me',
 				text: '我',
 				icon: 'user',
 				title: '个人中心',
-				Component: User,
+				component: User
 			}
 		]
         return (
-            <div>
-				<NavBar className="fixd-header" mode="dard">
-					{navList.find(v => v.path === pathname).title}   {/* 此处有BUG */}
-				</NavBar>
-				<div style={{marginTop:45}}>
+			<div>
+				<NavBar className='fixd-header' mode='dard'>{navList.find(v => v.path === pathname).title}</NavBar>
+				<div style={{ marginTop: 45 }}>
 					<Switch>
 						{navList.map(v => (
-							<Route key={v.path} path={v.path} component={v.Component}></Route>
+							<Route key={v.path} path={v.path} component={v.component}></Route>
 						))}
-						
 					</Switch>
 				</div>
-				
-				<NavLinkBar data={navList} />
-            </div>
+
+				<NavLinkBar data={navList}></NavLinkBar>
+
+			</div>
         
         )
     }
