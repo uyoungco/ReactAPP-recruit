@@ -6,14 +6,12 @@ import { Switch, Route } from 'react-router-dom'
 import NavLinkBar from '../navlink/navlink'
 import Boss from '../boss/boss'
 import Genius from '../genius/genius'
-
+import User from '../user/user'
 
 function Msg() {
 	return <h2>Msg</h2>
 }
-function User() {
-	return <h2>User</h2>
-}
+
 
 
 @connect(
