@@ -20,6 +20,18 @@ const models = {
 		'money':{'type':String}
 	},
 	chat:{
+		// 聊天频道ID
+		'chatid': { type: String, 'require': true },
+		// 谁发的
+		'from':{ 'type': String, 'require': true },
+		// 发给谁
+		'to': { 'type': String, 'require': true },
+		// 是否已阅读
+		'read': { 'type': Boolean, default:false},
+		// 发的内容
+		'content': { 'type': String, 'require': true, default:'' },
+		// 时间time
+		'create_time': { 'type': Number,default: new Date().getTime()}
 	}
 }
 
