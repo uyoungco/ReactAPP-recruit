@@ -7,10 +7,9 @@ import NavLinkBar from '../navlink/navlink'
 import Boss from '../boss/boss'
 import Genius from '../genius/genius'
 import User from '../user/user'
+import Msg from '../msg/msg'
 import { getMsgList, recvMsg } from '../../redux/chat.reudx'
-function Msg() {
-	return <h2>Msg</h2>
-}
+
 
 
 
