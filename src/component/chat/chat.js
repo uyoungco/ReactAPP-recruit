@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
 import { connect } from 'react-redux';
 import { getMsgList, sendMsg, recvMsg, readMsg } from '../../redux/chat.reudx'

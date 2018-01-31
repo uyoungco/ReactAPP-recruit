@@ -52,14 +52,39 @@ function magRead({from,userid,num}) {
     return {type:MSG_READ, payload:{from,userid,num}}
 }
 
+// callback
+// setTimeout(()=>{
+//     console.log(1)
+// })
+
+// promise
+// axios.post().then(res=>{
+//     return xx
+// }).then(res=>{
+//     return axios.post()
+// })
+
+// async + await 配合使用，await必须在async内部
+// 备份！！
+// export function readMsg(from) {
+//     return (dispatch, getState) => {
+//         axios.post('/user/readmsg', { from }).then(res => {
+//             const userid = getState().user._id
+//             if (res.status === 200 && res.data.code === 0) {
+//                 dispatch(magRead({ userid, from, num: res.data.num }))
+//             }
+//         })
+//     }
+// }
+
 export function readMsg(from) {
-    return (dispatch, getState)=>{
-        axios.post('/user/readmsg',{from}).then(res=>{
-            const userid = getState().user._id
-            if (res.status === 200 && res.data.code === 0) {
-                dispatch(magRead({userid,from, num: res.data.num}))
-            }
-        })
+    return async (dispatch, getState)=>{
+        const res = await axios.post('/user/readmsg',{from})
+
+        const userid = getState().user._id
+        if (res.status === 200 && res.data.code === 0) {
+            dispatch(magRead({userid,from, num: res.data.num}))
+        }
     }
 }
 export function recvMsg() {
