@@ -17,7 +17,7 @@ const store = createStore(reducers, compose(
 
 
 // boss genius me msg 四个页面
-ReactDom.render(
+ReactDom.hydrate(
   	<Provider store={store} >
 		<BrowserRouter>
 			<App></App>

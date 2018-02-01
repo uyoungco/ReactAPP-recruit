@@ -11,7 +11,7 @@ assethook({
 })
 
 import React from 'react'
-import {renderToString} from 'react-dom/server'
+import {renderToString, renderToNodeStream} from 'react-dom/server'
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -64,7 +64,38 @@ app.use(function(req, res, next){
 	}
 	const store = createStore(reducers, compose(applyMiddleware(thunk)))
 	let context = {}
-	const markup = renderToString (
+	// const markup = renderToString (
+	// 	(<Provider store={store} >
+	// 		<StaticRouter
+	// 			location = {req.url}
+	// 			context={context}
+	// 		>
+	// 			<App></App>
+	// 		</StaticRouter>
+	// 	  </Provider>)
+	// )
+	const obj = {
+		'/msg':'React聊天消息聊表',
+		'/boss':'BOSS查看牛人列表'
+	}
+	res.write(`
+		<!DOCTYPE html>
+		<html lang="zh-cn">
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+			<meta name="theme-color" content="#000000">
+			<title>React App</title>
+			<link rel="stylesheet" href="/${staticPath['main.css']}">
+			<meta name="description" content='${obj[req.url]}'>
+		</head>
+		<body>
+			<noscript>
+			You need to enable JavaScript to run this app.
+			</noscript>
+			<div id="root">
+	`)
+	const markupStream = renderToNodeStream (
 		(<Provider store={store} >
 			<StaticRouter
 				location = {req.url}
@@ -74,32 +105,38 @@ app.use(function(req, res, next){
 			</StaticRouter>
 		  </Provider>)
 	)
-	const obj = {
-		'/msg':'React聊天消息聊表',
-		'/boss':'BOSS查看牛人列表'
-	}
-	const pageHtml = `
-	<!DOCTYPE html>
-	<html lang="zh-cn">
-	  <head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="theme-color" content="#000000">
-		<title>React App</title>
-		<link rel="stylesheet" href="/${staticPath['main.css']}">
-		<meta name="description" content='${obj[req.url]}'>
-	  </head>
-	  <body>
-		<noscript>
-		  You need to enable JavaScript to run this app.
-		</noscript>
-		<div id="root">${markup}</div>
-		<script src="/${staticPath['main.js']}"></script>
-	  </body>
-	</html>
-`
+	markupStream.pipe(res,{end:false})
+	markupStream.on('end',()=>{
+		res.write(`
+				</div>
+				<script src="/${staticPath['main.js']}"></script>
+			</body>
+			</html>
+		`)
+		res.end()
+	})
+// 	const pageHtml = `
+// 	<!DOCTYPE html>
+// 	<html lang="zh-cn">
+// 	  <head>
+// 		<meta charset="utf-8">
+// 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+// 		<meta name="theme-color" content="#000000">
+// 		<title>React App</title>
+// 		<link rel="stylesheet" href="/${staticPath['main.css']}">
+// 		<meta name="description" content='${obj[req.url]}'>
+// 	  </head>
+// 	  <body>
+// 		<noscript>
+// 		  You need to enable JavaScript to run this app.
+// 		</noscript>
+// 		<div id="root">${markupStream}</div>
+// 		<script src="/${staticPath['main.js']}"></script>
+// 	  </body>
+// 	</html>
+// `
 
-	res.send(pageHtml)
+	// res.send(pageHtml)
 	// console.log('path resolve',path.resolve('build/index.html'))
 	// return res.sendFile(path.resolve('build/index.html'))
 })
