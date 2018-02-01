@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
+import { List, InputItem, NavBar, Icon, Grid, Toast } from 'antd-mobile'
 import { connect } from 'react-redux';
 import QueueAnim from 'rc-queue-anim';
 import { getMsgList, sendMsg, recvMsg, readMsg } from '../../redux/chat.reudx'
@@ -16,6 +16,7 @@ class Chat extends React.Component {
             text:'',
             showEmoji:false
         }
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
     componentDidMount() {
         if (!this.props.chat.chatmsg.length) {
@@ -37,11 +38,19 @@ class Chat extends React.Component {
         // socket.emit('sendmsg', {text:this.state.text})
         // this.setState({text:''})
         console.log(this.props)
+        const msg = this.state.text
+        if (msg === '') {
+            Toast.offline('请输入你要发送的内容', 2)
+            return false
+        }
         const from = this.props.user._id
         const to = this.props.match.params.user
-        const msg = this.state.text
+        
         this.props.sendMsg({ from, to, msg})
-        this.setState({text:''})
+        this.setState({
+            text:'',
+            showEmoji: this.state.showEmoji === true ? false : null
+        })
     }
     render() {
         const emoji = '😀 😃 😄 😁 😆 😅 😂 😊 😇 🙂 🙃 😉 😌 😍 😘 😗 😙 😚 😋 😜 😝 😛 🤑 🤗 🤓 😎 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 😤 😠 😡 😶 😐 😑 😯 😦 😧 😮 😲 😵 😳 😱 😨 😰 😢 😥 😭 😓 😪 😴 🙄 🤔 😬 🤐 😷 🤒 🤕 😈 👿 👹 👺 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾 👐 🙌 👏 🙏 👍 👎 👊 ✊ 🤘 👌 👈 👉 👆 👇 ✋  🖐 🖖 👋  💪 🖕 ✍️  💅 🖖 💄 💋 👄 👅 👂 👃 👁 👀 '
@@ -69,23 +78,25 @@ class Chat extends React.Component {
                     {users[userid].name}
                 </NavBar>
                 <QueueAnim delay={300}>
-                    {chatmsgs.map(v => {
-                        const avatar = require(`../img/${users[v.from].avatar}.png`)
-                        return v.from === userid ? (
-                            <List key={v._id}>
-                                <Item
-                                    thumb={avatar}
-                                >{v.content}</Item>
-                            </List>
-                        ) : (
-                            <List key={v._id}>
-                                <Item
-                                        extra={<img src={avatar} alt="avatar"/>}
-                                    className='chat-me'
-                                >{v.content}</Item>
-                            </List>
-                        )
-                    })}
+                    <div style={{marginBottom:44}}>
+                        {chatmsgs.map(v => {
+                            const avatar = require(`../img/${users[v.from].avatar}.png`)
+                            return v.from === userid ? (
+                                <List key={v._id}>
+                                    <Item
+                                        thumb={avatar}
+                                    >{v.content}</Item>
+                                </List>
+                            ) : (
+                                <List key={v._id}>
+                                    <Item
+                                            extra={<img src={avatar} alt="avatar"/>}
+                                        className='chat-me'
+                                    >{v.content}</Item>
+                                </List>
+                            )
+                        })}
+                    </div>
                 </QueueAnim>
                 <div className="stick-footer">
                     <List>
@@ -95,6 +106,7 @@ class Chat extends React.Component {
                             onChange={v =>{
                                 this.setState({text:v})
                             }}
+                          
                             extra={
                                 <div>
                                     <span style={{marginRight:15}} onClick={() => {
@@ -103,7 +115,7 @@ class Chat extends React.Component {
                                         })
                                         this.fixCarousel()
                                     }}>😃</span>
-                                    <span onClick={() => this.handleSubmit()}>发送</span>
+                                    <span onClick={this.handleSubmit}>发送</span>
                                 </div>
                             }
                         ></InputItem>
