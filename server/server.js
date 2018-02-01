@@ -4,13 +4,27 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import model from './model'
 
-import React from 'react'
-import {renderToString,renderToStaticMarkup} from 'react-dom/server'
-const Chat = model.getModel('chat')
+import csshook from 'css-modules-require-hook/preset'
+import assethook from 'asset-require-hook'
+assethook({
+	extensions: ['png']
+})
 
+import React from 'react'
+import {renderToString} from 'react-dom/server'
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { StaticRouter } from 'react-router-dom';
+import App from '../src/App'
+import reducers from '../src/reducer'
+import staticPath from '../build/asset-manifest.json'
+
+
+
+const Chat = model.getModel('chat')
 const path = require('path')
 const app = express()
-
 
 
 // work with express 
@@ -48,8 +62,46 @@ app.use(function(req, res, next){
 	if (req.url.startsWith('/user/') || req.url.startsWith('/static/')) {
 		return next()
 	}
+	const store = createStore(reducers, compose(applyMiddleware(thunk)))
+	let context = {}
+	const markup = renderToString (
+		(<Provider store={store} >
+			<StaticRouter
+				location = {req.url}
+				context={context}
+			>
+				<App></App>
+			</StaticRouter>
+		  </Provider>)
+	)
+	const obj = {
+		'/msg':'React聊天消息聊表',
+		'/boss':'BOSS查看牛人列表'
+	}
+	const pageHtml = `
+	<!DOCTYPE html>
+	<html lang="zh-cn">
+	  <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="theme-color" content="#000000">
+		<title>React App</title>
+		<link rel="stylesheet" href="/${staticPath['main.css']}">
+		<meta name="description" content='${obj[req.url]}'>
+	  </head>
+	  <body>
+		<noscript>
+		  You need to enable JavaScript to run this app.
+		</noscript>
+		<div id="root">${markup}</div>
+		<script src="/${staticPath['main.js']}"></script>
+	  </body>
+	</html>
+`
+
+	res.send(pageHtml)
 	// console.log('path resolve',path.resolve('build/index.html'))
-	return res.sendFile(path.resolve('build/index.html'))
+	// return res.sendFile(path.resolve('build/index.html'))
 })
 app.use('/', express.static(path.resolve('build')))
 
